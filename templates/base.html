@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Fantasy Premier League{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header>
+        <nav>
+            <h1>⚽ Fantasy Premier League</h1>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/leagues/">Leagues</a></li>
+                <li><a href="/players/">Players</a></li>
+                <li><a href="/teams/">Teams</a></li>
+                <li><a href="/admin/">Admin</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Fantasy Premier League. All rights reserved.</p>
+        <p>Built with Django and Premier League API</p>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

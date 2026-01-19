@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Fantasy Premier League{% endblock %}
+
+{% block content %}
+    <section class="hero">
+        <h2>Welcome to Fantasy Premier League</h2>
+        <p>Manage your dream team and compete with players worldwide</p>
+        <a href="/leagues/" class="btn btn-primary">Browse Leagues</a>
+        <a href="/admin/" class="btn btn-secondary">Admin Panel</a>
+    </section>
+
+    <section>
+        <h2>Features</h2>
+        <div class="grid">
+            <div class="card">
+                <div class="card-header">
+                    <h3>👥 Manage Leagues</h3>
+                </div>
+                <div class="card-body">
+                    <p>Create and manage fantasy football leagues with your friends and compete for glory.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>⭐ Scout Players</h3>
+                </div>
+                <div class="card-body">
+                    <p>Browse Premier League players, check their stats, and build your perfect squad.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>🏆 Track Performance</h3>
+                </div>
+                <div class="card-body">
+                    <p>Real-time stats and live scoring to track your team's performance week by week.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
