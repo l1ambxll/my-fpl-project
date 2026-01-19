@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-z-&8n#1ugi27dwyyh*_6php=*vczo@=%z0y#=1r6p2n@xn=j^q
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "accounts",
     "players",
     "leagues",
     "teams",
@@ -121,6 +122,9 @@ USE_TZ = True
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "static"]
+
+# Authentication
+LOGIN_URL = 'accounts:login'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

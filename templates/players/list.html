@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Players - Fantasy Premier League{% endblock %}
+
+{% block content %}
+  <h2>Players</h2>
+  <div class="grid">
+    {% for p in players %}
+      <div class="card">
+        <div class="card-header"><h3>{{ p.web_name }}</h3></div>
+        <div class="card-body">
+          <p>Team: {% if p.team %}{{ p.team.name }}{% else %}—{% endif %}</p>
+          <p>Position: {{ p.get_position_display }}</p>
+          <p>Points: {{ p.total_points }}</p>
+          <a href="{% url 'players:detail' p.pk %}" class="btn btn-secondary">View</a>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

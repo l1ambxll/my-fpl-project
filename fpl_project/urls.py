@@ -16,10 +16,18 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from fpl_project import views
 
 urlpatterns = [
     path("", views.home, name="home"),
     path("admin/", admin.site.urls),
+    
+    # Accounts app URLs
+    path("", include("accounts.urls")),
+
+    # Domain apps
+    path('players/', include('players.urls')),
+    path('teams/', include('teams.urls')),
+    path('leagues/', include('leagues.urls')),
 ]

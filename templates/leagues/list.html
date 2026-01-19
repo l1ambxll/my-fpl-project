@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Leagues - Fantasy Premier League{% endblock %}
+
+{% block content %}
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <h2>Leagues</h2>
+    {% if user.is_authenticated %}
+      <a href="{% url 'leagues:create' %}" class="btn btn-primary">Create League</a>
+    {% else %}
+      <a href="{% url 'accounts:login' %}?next={% url 'leagues:list' %}" class="btn btn-primary">Login to create</a>
+    {% endif %}
+  </div>
+  <div class="grid">
+    {% for l in leagues %}
+      <div class="card">
+        <div class="card-header"><h3>{{ l.name }}</h3></div>
+        <div class="card-body">
+          <p>Owner: {{ l.owner.username }}</p>
+          <a href="{% url 'leagues:detail' l.slug %}" class="btn btn-secondary">View</a>
+          {% if user.is_authenticated and not user in l.members.all %}
+            <a href="{% url 'leagues:join' l.slug %}" class="btn btn-primary" style="margin-left:8px;">Join</a>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

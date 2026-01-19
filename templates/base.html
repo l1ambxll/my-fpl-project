@@ -19,10 +19,28 @@
                 <li><a href="/teams/">Teams</a></li>
                 <li><a href="/admin/">Admin</a></li>
             </ul>
+            <div class="auth-links">
+                {% if user.is_authenticated %}
+                    <span class="user-greeting">Welcome, {{ user.username }}!</span>
+                    <a href="{% url 'accounts:profile' %}" class="nav-link">Profile</a>
+                    <a href="{% url 'accounts:logout' %}" class="nav-link logout-link">Logout</a>
+                {% else %}
+                    <a href="{% url 'accounts:login' %}" class="nav-link">Login</a>
+                    <a href="{% url 'accounts:register' %}" class="nav-link register-link">Register</a>
+                {% endif %}
+            </div>
         </nav>
     </header>
 
     <div class="container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{% if message.tags %}{{ message.tags }}{% else %}info{% endif %}">
+                    {{ message }}
+                    <button type="button" class="close">&times;</button>
+                </div>
+            {% endfor %}
+        {% endif %}
         {% block content %}{% endblock %}
     </div>
 

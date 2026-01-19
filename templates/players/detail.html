@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}{{ player.web_name }} - Player{% endblock %}
+
+{% block content %}
+  <div class="card">
+    <div class="card-header"><h2>{{ player.web_name }}</h2></div>
+    <div class="card-body">
+      <p><strong>Full name:</strong> {{ player.first_name }} {{ player.last_name }}</p>
+      <p><strong>Team:</strong> {% if player.team %}{{ player.team.name }}{% else %}—{% endif %}</p>
+      <p><strong>Position:</strong> {{ player.get_position_display }}</p>
+      <p><strong>Now cost:</strong> £{{ player.now_cost }}</p>
+      <p><strong>Total points:</strong> {{ player.total_points }}</p>
+    </div>
+  </div>
+{% endblock %}

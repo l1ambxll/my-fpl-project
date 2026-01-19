@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}{{ club.name }} - Club{% endblock %}
+
+{% block content %}
+  <div class="card">
+    <div class="card-header"><h2>{{ club.name }}</h2></div>
+    <div class="card-body">
+      <p><strong>Short name:</strong> {{ club.short_name }}</p>
+      <p><strong>FPL ID:</strong> {{ club.fpl_team_id }}</p>
+      <h3>Players</h3>
+      <ul>
+        {% for player in club.players.all|slice:":40" %}
+          <li><a href="{% url 'players:detail' player.pk %}">{{ player.web_name }}</a> — {{ player.get_position_display }}</li>
+        {% empty %}
+          <li>No players available.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}{{ team.name }} - Team{% endblock %}
+
+{% block content %}
+  <div class="card">
+    <div class="card-header"><h2>{{ team.name }}</h2></div>
+    <div class="card-body">
+      <p><strong>Owner:</strong> {{ team.owner.username }}</p>
+      <h3>Players ({{ team.players.count }}/11)</h3>
+      {% if team.players.count > 0 %}
+        <ul>
+          {% for player in team.players.all %}
+            <li><a href="{% url 'players:detail' player.pk %}">{{ player.web_name }}</a> ({{ player.get_position_display }}) - {{ player.total_points }} pts</li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>No players assigned.</p>
+      {% endif %}
+      
+      <!-- Manage button if owner -->
+      {% if user == team.owner %}
+        <a href="{% url 'teams:manage_players' team.pk %}" class="btn btn-primary" style="margin-top: 15px;">Manage Squad</a>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

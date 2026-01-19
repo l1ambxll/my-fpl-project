@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Leaderboard - {{ league.name }}{% endblock %}
+
+{% block content %}
+  <h2>Leaderboard — {{ league.name }}</h2>
+  <div class="card">
+    <div class="card-body">
+      <table style="width:100%;border-collapse:collapse;">
+        <thead>
+          <tr>
+            <th style="text-align:left;padding:8px;">Rank</th>
+            <th style="text-align:left;padding:8px;">Team</th>
+            <th style="text-align:left;padding:8px;">Owner</th>
+            <th style="text-align:left;padding:8px;">Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for t in teams %}
+            <tr>
+              <td style="padding:8px;">{{ forloop.counter }}</td>
+              <td style="padding:8px;">{{ t.name }}</td>
+              <td style="padding:8px;">{{ t.owner.username }}</td>
+              <td style="padding:8px;">{{ t.score|default:0 }}</td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="4" style="padding:8px;">No teams in this league.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}

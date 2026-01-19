@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}User Teams - Fantasy Premier League{% endblock %}
+
+{% block content %}
+  <h2>User Teams</h2>
+  <div class="grid">
+    {% for t in teams %}
+      <div class="card">
+        <div class="card-header"><h3>{{ t.name }}</h3></div>
+        <div class="card-body">
+          <p>Owner: {{ t.owner.username }}</p>
+          <a href="{% url 'teams:team_detail' t.pk %}" class="btn btn-secondary">View</a>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

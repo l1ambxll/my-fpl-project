@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}{{ league.name }} - League{% endblock %}
+
+{% block content %}
+  <div class="card">
+    <div class="card-header"><h2>{{ league.name }}</h2></div>
+    <div class="card-body">
+      <p><strong>Owner:</strong> {{ league.owner.username }}</p>
+      <p>{{ league.about }}</p>
+      {% if user.is_authenticated %}
+        {% if is_member %}
+          <p class="bg-accent">You are a member of this league.</p>
+        {% else %}
+          <a href="{% url 'leagues:join' league.slug %}" class="btn btn-primary">Join League</a>
+        {% endif %}
+      {% else %}
+        <a href="{% url 'accounts:login' %}?next={% url 'leagues:detail' league.slug %}" class="btn btn-primary">Login to join</a>
+      {% endif %}
+      <h3>Members</h3>
+      <ul>
+        {% for m in league.members.all %}
+          <li>{{ m.username }}</li>
+        {% empty %}
+          <li>No members yet.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+{% endblock %}

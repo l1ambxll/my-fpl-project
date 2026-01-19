@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile - Fantasy Premier League{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>My Profile</h1>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{% if message.tags %}{{ message.tags }}{% else %}info{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        <div class="profile-card card">
+            <div class="card-header">
+                <h2>Account Information</h2>
+            </div>
+            <div class="card-body">
+                <table class="profile-table">
+                    <tr>
+                        <th>Username:</th>
+                        <td>{{ user.username }}</td>
+                    </tr>
+                    <tr>
+                        <th>Email:</th>
+                        <td>{{ user.email }}</td>
+                    </tr>
+                    <tr>
+                        <th>First Name:</th>
+                        <td>{{ user.first_name|default:"Not set" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Last Name:</th>
+                        <td>{{ user.last_name|default:"Not set" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Member Since:</th>
+                        <td>{{ user.date_joined|date:"F d, Y" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Last Login:</th>
+                        <td>{{ user.last_login|default:"Never" }}</td>
+                    </tr>
+                </table>
+                
+                <div class="profile-actions">
+                    <a href="{% url 'accounts:logout' %}" class="btn btn-secondary">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_css %}
+    <style>
+        .profile-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        
+        .profile-table th {
+            text-align: left;
+            background-color: var(--secondary-color);
+            color: var(--text-dark);
+            padding: 0.75rem;
+            font-weight: 600;
+            width: 30%;
+        }
+        
+        .profile-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .profile-actions {
+            margin-top: 2rem;
+            display: flex;
+            gap: 1rem;
+        }
+    </style>
+{% endblock %}
