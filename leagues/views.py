@@ -10,8 +10,34 @@ from teams.models import UserTeam
 
 
 def league_list(request):
+    # Get filter parameter
+    league_type_filter = request.GET.get('type')
+    year_group_filter = request.GET.get('year_group')
+    
     leagues = League.objects.select_related('owner').all()
-    return render(request, 'leagues/list.html', {'leagues': leagues})
+    
+    # Apply filters
+    if league_type_filter:
+        leagues = leagues.filter(league_type=league_type_filter)
+    if year_group_filter:
+        leagues = leagues.filter(year_group=year_group_filter)
+    
+    # Organize by type for display
+    whole_school_leagues = leagues.filter(league_type='whole_school')
+    year_group_leagues = leagues.filter(league_type='year_group').order_by('year_group')
+    class_leagues = leagues.filter(league_type='class')
+    other_leagues = leagues.filter(league_type='other')
+    
+    context = {
+        'leagues': leagues,
+        'whole_school_leagues': whole_school_leagues,
+        'year_group_leagues': year_group_leagues,
+        'class_leagues': class_leagues,
+        'other_leagues': other_leagues,
+        'league_type_filter': league_type_filter,
+        'year_group_filter': year_group_filter,
+    }
+    return render(request, 'leagues/list.html', context)
 
 
 def league_detail(request, slug):
@@ -27,6 +53,9 @@ def league_create(request):
         if form.is_valid():
             name = form.cleaned_data['name']
             about = form.cleaned_data['about']
+            league_type = form.cleaned_data['league_type']
+            year_group = form.cleaned_data.get('year_group') or None
+            
             slug = slugify(name)
             # ensure unique slug
             base_slug = slug
@@ -35,9 +64,16 @@ def league_create(request):
                 slug = f"{base_slug}-{counter}"
                 counter += 1
 
-            league = League.objects.create(name=name, slug=slug, owner=request.user, about=about)
+            league = League.objects.create(
+                name=name,
+                slug=slug,
+                owner=request.user,
+                about=about,
+                league_type=league_type,
+                year_group=year_group
+            )
             league.members.add(request.user)
-            messages.success(request, 'League created successfully.')
+            messages.success(request, f'{league.get_league_type_display()} league "{name}" created successfully.')
             return redirect('leagues:detail', slug=league.slug)
     else:
         form = LeagueCreateForm()

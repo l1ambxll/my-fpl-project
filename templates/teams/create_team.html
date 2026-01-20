@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Create Team - Fantasy Football{% endblock %}
+
+{% block content %}
+  <div style="max-width: 500px; margin: 50px auto;">
+    <div class="card">
+      <div class="card-header">
+        <h2>Create Your Fantasy Team</h2>
+      </div>
+      <div class="card-body">
+        <p>Choose a name for your fantasy football team and start building your squad!</p>
+        
+        <form method="post" style="margin-top: 20px;">
+          {% csrf_token %}
+          <div style="margin-bottom: 20px;">
+            <label for="team_name"><strong>Team Name:</strong></label>
+            <input 
+              type="text" 
+              name="team_name" 
+              id="team_name" 
+              placeholder="e.g., Top Strikers United" 
+              required
+              style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; margin-top: 8px;"
+            >
+            <small style="color: #666;">Give your team a unique and fun name!</small>
+          </div>
+          
+          <div style="display: flex; gap: 10px;">
+            <button type="submit" class="btn btn-primary" style="flex: 1;">Create Team</button>
+            <a href="{% url 'teams:index' %}" class="btn btn-secondary" style="flex: 1; text-align: center; text-decoration: none;">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top: 20px;">
+      <div class="card-header">
+        <h3>Team Rules</h3>
+      </div>
+      <div class="card-body">
+        <ul style="line-height: 1.8;">
+          <li>✅ Select players from real Premier League clubs</li>
+          <li>✅ Maximum 3 players from the same club</li>
+          <li>✅ Earn points based on real player performance</li>
+          <li>✅ Share your team across all leagues you join</li>
+          <li>✅ Remove and replace players anytime</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+{% endblock %}

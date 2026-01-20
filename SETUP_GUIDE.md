@@ -1,7 +1,16 @@
-# Fantasy Premier League - Django Setup Guide
+# School Fantasy Football League - Setup Guide
 
 ## Project Overview
-This is a Fantasy Football League web application built with Django, featuring a bicolor UI (Dark Blue #1a2332 and Gold #f39c12) and integration with the Premier League API.
+
+This is an educational Fantasy Football League web application designed specifically for schools and children. It's built with Django and integrates with the Premier League API to provide:
+
+- **Simple, intuitive interface** for students
+- **Authentic fantasy football mechanics** with real player data
+- **Data analysis tools** to help students learn analytical skills
+- **Classroom engagement** through friendly competition
+- **Points tracking system** to understand real fantasy football scoring
+
+**Purpose:** Help increase student engagement through fantasy football gameplay while developing their analytical thinking skills.
 
 ## Project Structure
 ```
@@ -11,15 +20,16 @@ my-fpl-project/
 │   ├── urls.py              # URL routing
 │   ├── wsgi.py              # WSGI application
 │   └── views.py             # Project-level views
-├── players/                  # Players app (for managing FPL players)
-├── leagues/                  # Leagues app (for managing fantasy leagues)
-├── teams/                    # Teams app (for managing user teams)
-├── templates/               # HTML templates
-│   ├── base.html           # Base template with bicolor theme
+├── players/                  # PL player management app
+├── leagues/                  # School/class league management
+├── teams/                    # Student team management
+├── accounts/                 # Student authentication & profiles
+├── templates/               # Student-friendly HTML templates
+│   ├── base.html           # Base template with school-appropriate theme
 │   └── home.html           # Home page
 ├── static/                  # Static files (CSS, JS, images)
 │   ├── css/
-│   │   └── style.css       # Bicolor UI stylesheet
+│   │   └── style.css       # Bicolor UI stylesheet (school-ready)
 │   └── js/
 ├── manage.py               # Django management script
 ├── requirements.txt        # Python dependencies

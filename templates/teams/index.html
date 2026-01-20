@@ -3,17 +3,39 @@
 {% block title %}Teams - Fantasy Premier League{% endblock %}
 
 {% block content %}
-  <h2>Teams</h2>
+  <h2>Teams & Squad Management</h2>
   
   <div style="margin-bottom: 40px;">
-    <h3>Premier League Clubs</h3>
-    <p>Browse the {{ clubs.count }} clubs in the Premier League:</p>
-    <a href="{% url 'teams:club_list' %}" class="btn btn-primary">View All Clubs</a>
+    <h3>🏗️ Create Your Team</h3>
+    <p>Build your fantasy football squad and compete across all leagues:</p>
+    <a href="{% url 'teams:create' %}" class="btn btn-primary">Create New Team</a>
   </div>
 
-  <div>
-    <h3>Your Teams</h3>
-    <p>Manage your fantasy teams:</p>
-    <a href="{% url 'teams:team_list' %}" class="btn btn-primary">View User Teams</a>
+  <div style="margin-bottom: 40px;">
+    <h3>👥 Your Teams</h3>
+    <p>Manage your fantasy teams. Your team players are automatically shared across all leagues you join:</p>
+    <a href="{% url 'teams:team_list' %}" class="btn btn-secondary">Manage Teams</a>
+  </div>
+
+  <div style="margin-bottom: 40px;">
+    <h3>⚽ Premier League Clubs</h3>
+    <p>Browse the {{ clubs.count }} clubs in the Premier League to see available players:</p>
+    <a href="{% url 'teams:club_list' %}" class="btn btn-secondary">View All Clubs</a>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h3>📋 Team Rules</h3>
+    </div>
+    <div class="card-body">
+      <ul style="line-height: 1.8;">
+        <li>✅ <strong>One Team, Multiple Leagues:</strong> Create one team and use it in all leagues you join</li>
+        <li>✅ <strong>Maximum 3 per Club:</strong> You can select a maximum of 3 players from the same Premier League club</li>
+        <li>✅ <strong>Transfer Limit:</strong> Maximum 2 transfers (player swaps) per gameweek</li>
+        <li>✅ <strong>Add & Remove Freely:</strong> Add players to your team anytime from the manage page</li>
+        <li>✅ <strong>Points Tracking:</strong> Your team automatically earns points based on real player performance</li>
+        <li>✅ <strong>League Competition:</strong> Your same team competes in every league you're a member of</li>
+      </ul>
+    </div>
   </div>
 {% endblock %}

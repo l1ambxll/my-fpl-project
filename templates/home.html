@@ -1,44 +1,90 @@
 {% extends "base.html" %}
 
-{% block title %}Home - Fantasy Premier League{% endblock %}
+{% block title %}Home - School Fantasy Football League{% endblock %}
 
 {% block content %}
     <section class="hero">
-        <h2>Welcome to Fantasy Premier League</h2>
-        <p>Manage your dream team and compete with players worldwide</p>
-        <a href="/leagues/" class="btn btn-primary">Browse Leagues</a>
-        <a href="/admin/" class="btn btn-secondary">Admin Panel</a>
+        <h2>Welcome to School Fantasy Football League</h2>
+        <p>Build your team, compete with classmates, and develop analytical skills through fantasy football</p>
+        {% if not user.is_authenticated %}
+            <a href="{% url 'accounts:register' %}" class="btn btn-primary">Join Now</a>
+            <a href="{% url 'accounts:login' %}" class="btn btn-secondary">Login</a>
+        {% else %}
+            <a href="/leagues/" class="btn btn-primary">View Leagues</a>
+            <a href="/players/" class="btn btn-secondary">Scout Players</a>
+        {% endif %}
     </section>
 
     <section>
-        <h2>Features</h2>
+        <h2>Why Fantasy Football in School?</h2>
         <div class="grid">
             <div class="card">
                 <div class="card-header">
-                    <h3>👥 Manage Leagues</h3>
+                    <h3>📊 Learn Data Analysis</h3>
                 </div>
                 <div class="card-body">
-                    <p>Create and manage fantasy football leagues with your friends and compete for glory.</p>
+                    <p>Analyze player performance statistics and make data-driven decisions about your team selections.</p>
                 </div>
             </div>
 
             <div class="card">
                 <div class="card-header">
-                    <h3>⭐ Scout Players</h3>
+                    <h3>💡 Strategic Thinking</h3>
                 </div>
                 <div class="card-body">
-                    <p>Browse Premier League players, check their stats, and build your perfect squad.</p>
+                    <p>Manage your budget, compare player values, and develop winning strategies alongside your classmates.</p>
                 </div>
             </div>
 
             <div class="card">
                 <div class="card-header">
-                    <h3>🏆 Track Performance</h3>
+                    <h3>🤝 Fun Discussion</h3>
                 </div>
                 <div class="card-body">
-                    <p>Real-time stats and live scoring to track your team's performance week by week.</p>
+                    <p>Compete with your classmates in school leagues and create fun discussion points during class.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>⚽ Real Data</h3>
+                </div>
+                <div class="card-body">
+                    <p>Use real Premier League player data to build your team and track authentic performance metrics.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>🏆 Track Progress</h3>
+                </div>
+                <div class="card-body">
+                    <p>See your team's performance week-by-week and benchmark against other students in your league.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>🎓 Learning Skills</h3>
+                </div>
+                <div class="card-body">
+                    <p>Develop analytical, financial, and strategic thinking skills while having fun with football.</p>
                 </div>
             </div>
         </div>
     </section>
+
+    {% if user.is_authenticated %}
+    <section>
+        <h2>Get Started</h2>
+        <p>Ready to begin? Here's what to do:</p>
+        <ol>
+            <li><a href="/leagues/">Join or create a school league</a></li>
+            <li><a href="/players/">Browse Premier League players</a></li>
+            <li>Build your team with real player data</li>
+            <li>Compete with your classmates</li>
+            <li>Discuss strategy and analyze performance</li>
+        </ol>
+    </section>
+    {% endif %}
 {% endblock %}

@@ -3,25 +3,174 @@
 {% block title %}{{ team.name }} - Team{% endblock %}
 
 {% block content %}
-  <div class="card">
-    <div class="card-header"><h2>{{ team.name }}</h2></div>
-    <div class="card-body">
-      <p><strong>Owner:</strong> {{ team.owner.username }}</p>
-      <h3>Players ({{ team.players.count }}/11)</h3>
-      {% if team.players.count > 0 %}
-        <ul>
-          {% for player in team.players.all %}
-            <li><a href="{% url 'players:detail' player.pk %}">{{ player.web_name }}</a> ({{ player.get_position_display }}) - {{ player.total_points }} pts</li>
-          {% endfor %}
-        </ul>
+  <div class="team-header">
+    <h2>{{ team.name }}</h2>
+    <p class="formation-label">Formation: {{ formation }} | Players: {{ team.players.count }}/11</p>
+    
+    <!-- League Assignment Section -->
+    <div style="background: #f0f4f8; padding: 12px; border-radius: 5px; margin: 15px 0; border-left: 4px solid #3498db;">
+      {% if team.league %}
+        <p style="margin: 0;"><strong>📊 League:</strong> {{ team.league.name }}</p>
       {% else %}
-        <p>No players assigned.</p>
-      {% endif %}
-      
-      <!-- Manage button if owner -->
-      {% if user == team.owner %}
-        <a href="{% url 'teams:manage_players' team.pk %}" class="btn btn-primary" style="margin-top: 15px;">Manage Squad</a>
+        <p style="margin: 0; color: #7f8c8d;"><strong>📊 League:</strong> Not assigned to any league</p>
       {% endif %}
     </div>
+
+    {% if user == team.owner %}
+      <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+        <a href="{% url 'teams:manage_players' team.pk %}" class="btn btn-primary">Manage Squad</a>
+        <a href="{% url 'teams:join_league' team.pk %}" class="btn btn-secondary">{% if team.league %}Change{% else %}Join{% endif %} League</a>
+      </div>
+
+      <!-- Quick League Assignment Form -->
+      {% if user_leagues %}
+      <div style="background: #f9f9f9; padding: 15px; border-radius: 5px; border: 1px solid #ddd; margin-bottom: 20px;">
+        <h4 style="margin-top: 0; margin-bottom: 12px;">Quick Assign to League:</h4>
+        <form method="post" action="{% url 'teams:assign_league' %}" style="display: flex; gap: 10px;">
+          {% csrf_token %}
+          <input type="hidden" name="team_id" value="{{ team.pk }}">
+          <select name="league_id" required style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+            <option value="">-- Select a league --</option>
+            {% for league in user_leagues %}
+              <option value="{{ league.id }}">{{ league.name }}</option>
+            {% endfor %}
+          </select>
+          <button type="submit" class="btn btn-primary" style="white-space: nowrap;">Assign</button>
+        </form>
+      </div>
+      {% endif %}
+    {% endif %}
+  </div>
+
+  <!-- Football Pitch -->
+  <div class="pitch-container">
+    <div class="pitch">
+      <!-- Center Line -->
+      <div class="pitch-line-h"></div>
+      <div class="pitch-line-v"></div>
+
+      <!-- Goalkeeper Row -->
+      <div class="position-row gk-row">
+        <div class="position-label">GK</div>
+        <div class="players-container">
+          {% for player in gk %}
+            <div class="player-card-pitch" data-position="gk">
+              <div class="player-shirt">
+                <span class="player-initials">{{ player.web_name|slice:":2"|upper }}</span>
+              </div>
+              <div class="player-info">
+                <p class="player-name">{{ player.web_name }}</p>
+                <p class="player-team">{{ player.team.short_name|default:"—" }}</p>
+              </div>
+            </div>
+          {% empty %}
+            <div class="empty-slot">+</div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Defenders Row -->
+      <div class="position-row def-row">
+        <div class="position-label">DEF ({{ def_count }})</div>
+        <div class="players-container">
+          {% for player in def_players %}
+            <div class="player-card-pitch" data-position="def">
+              <div class="player-shirt">
+                <span class="player-initials">{{ player.web_name|slice:":2"|upper }}</span>
+              </div>
+              <div class="player-info">
+                <p class="player-name">{{ player.web_name }}</p>
+                <p class="player-team">{{ player.team.short_name|default:"—" }}</p>
+              </div>
+            </div>
+          {% empty %}
+            <div class="empty-slot">+</div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Midfielders Row -->
+      <div class="position-row mid-row">
+        <div class="position-label">MID ({{ mid_count }})</div>
+        <div class="players-container">
+          {% for player in mid_players %}
+            <div class="player-card-pitch" data-position="mid">
+              <div class="player-shirt">
+                <span class="player-initials">{{ player.web_name|slice:":2"|upper }}</span>
+              </div>
+              <div class="player-info">
+                <p class="player-name">{{ player.web_name }}</p>
+                <p class="player-team">{{ player.team.short_name|default:"—" }}</p>
+              </div>
+            </div>
+          {% empty %}
+            <div class="empty-slot">+</div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Forwards Row -->
+      <div class="position-row fwd-row">
+        <div class="position-label">FWD ({{ fwd_count }})</div>
+        <div class="players-container">
+          {% for player in fwd_players %}
+            <div class="player-card-pitch" data-position="fwd">
+              <div class="player-shirt">
+                <span class="player-initials">{{ player.web_name|slice:":2"|upper }}</span>
+              </div>
+              <div class="player-info">
+                <p class="player-name">{{ player.web_name }}</p>
+                <p class="player-team">{{ player.team.short_name|default:"—" }}</p>
+              </div>
+            </div>
+          {% empty %}
+            <div class="empty-slot">+</div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Team Stats -->
+  <div class="team-stats">
+    <div class="stat-card">
+      <h4>Team Total Points</h4>
+      <p class="stat-value">{{ team.players.all|dictsort:"total_points"|last|default:"0" }}</p>
+    </div>
+    <div class="stat-card">
+      <h4>Owner</h4>
+      <p class="stat-value">{{ team.owner.username }}</p>
+    </div>
+  </div>
+
+  <!-- List View Toggle -->
+  <div class="list-view-section">
+    <h3>Squad List</h3>
+    <table class="squad-table">
+      <thead>
+        <tr>
+          <th>Player</th>
+          <th>Position</th>
+          <th>Team</th>
+          <th>Points</th>
+          <th>Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for player in team.players.all|dictsort:"position" %}
+          <tr>
+            <td><a href="{% url 'players:detail' player.pk %}">{{ player.web_name }}</a></td>
+            <td>{{ player.get_position_display }}</td>
+            <td>{{ player.team.name|default:"—" }}</td>
+            <td>{{ player.total_points }}</td>
+            <td>£{{ player.now_cost|default:"—" }}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="5">No players assigned.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
 {% endblock %}

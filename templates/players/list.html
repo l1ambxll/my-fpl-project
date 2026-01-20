@@ -4,17 +4,125 @@
 
 {% block content %}
   <h2>Players</h2>
+  
+  <!-- Filter and Search Section -->
+  <div class="filter-section">
+    <form method="get" class="filter-form">
+      <div class="filter-row">
+        <!-- Search -->
+        <div class="filter-group">
+          <label for="search">Search:</label>
+          <input 
+            type="text" 
+            id="search" 
+            name="search" 
+            placeholder="Player or team name..." 
+            value="{{ search_query }}"
+            class="filter-input"
+          >
+        </div>
+        
+        <!-- Position Filter -->
+        <div class="filter-group">
+          <label for="position">Position:</label>
+          <select id="position" name="position" class="filter-input">
+            <option value="">All Positions</option>
+            {% for value, label in position_choices %}
+              <option value="{{ value }}" {% if selected_position|stringformat:"s" == value|stringformat:"s" %}selected{% endif %}>
+                {{ label }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+        
+        <!-- Price Range -->
+        <div class="filter-group">
+          <label for="price_min">Price Min:</label>
+          <input 
+            type="number" 
+            id="price_min" 
+            name="price_min" 
+            placeholder="Min" 
+            value="{{ price_min }}"
+            step="0.1"
+            class="filter-input"
+          >
+        </div>
+        
+        <div class="filter-group">
+          <label for="price_max">Price Max:</label>
+          <input 
+            type="number" 
+            id="price_max" 
+            name="price_max" 
+            placeholder="Max" 
+            value="{{ price_max }}"
+            step="0.1"
+            class="filter-input"
+          >
+        </div>
+      </div>
+      
+      <div class="filter-row">
+        <!-- Form Range (Points) -->
+        <div class="filter-group">
+          <label for="form_min">Form Min (Points):</label>
+          <input 
+            type="number" 
+            id="form_min" 
+            name="form_min" 
+            placeholder="Min Points" 
+            value="{{ form_min }}"
+            class="filter-input"
+          >
+        </div>
+        
+        <div class="filter-group">
+          <label for="form_max">Form Max (Points):</label>
+          <input 
+            type="number" 
+            id="form_max" 
+            name="form_max" 
+            placeholder="Max Points" 
+            value="{{ form_max }}"
+            class="filter-input"
+          >
+        </div>
+        
+        <!-- Sort -->
+        <div class="filter-group">
+          <label for="sort">Sort By:</label>
+          <select id="sort" name="sort" class="filter-input">
+            <option value="-total_points" {% if sort_by == "-total_points" %}selected{% endif %}>Points (High to Low)</option>
+            <option value="total_points" {% if sort_by == "total_points" %}selected{% endif %}>Points (Low to High)</option>
+            <option value="-now_cost" {% if sort_by == "-now_cost" %}selected{% endif %}>Price (High to Low)</option>
+            <option value="now_cost" {% if sort_by == "now_cost" %}selected{% endif %}>Price (Low to High)</option>
+            <option value="web_name" {% if sort_by == "web_name" %}selected{% endif %}>Name (A to Z)</option>
+          </select>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Apply Filters</button>
+        <a href="{% url 'players:list' %}" class="btn btn-secondary">Clear</a>
+      </div>
+    </form>
+  </div>
+  
+  <p class="results-count">Found {{ players|length }} player(s)</p>
+  
   <div class="grid">
     {% for p in players %}
       <div class="card">
         <div class="card-header"><h3>{{ p.web_name }}</h3></div>
         <div class="card-body">
-          <p>Team: {% if p.team %}{{ p.team.name }}{% else %}—{% endif %}</p>
-          <p>Position: {{ p.get_position_display }}</p>
-          <p>Points: {{ p.total_points }}</p>
+          <p><strong>Team:</strong> {% if p.team %}{{ p.team.name }}{% else %}—{% endif %}</p>
+          <p><strong>Position:</strong> {{ p.get_position_display }}</p>
+          <p><strong>Price:</strong> £{{ p.now_cost|default:"—" }}</p>
+          <p><strong>Points:</strong> {{ p.total_points }}</p>
           <a href="{% url 'players:detail' p.pk %}" class="btn btn-secondary">View</a>
         </div>
       </div>
+    {% empty %}
+      <p>No players found matching your filters.</p>
     {% endfor %}
   </div>
 {% endblock %}

@@ -3,7 +3,7 @@
 {% block title %}Leagues - Fantasy Premier League{% endblock %}
 
 {% block content %}
-  <div style="display:flex;justify-content:space-between;align-items:center">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
     <h2>Leagues</h2>
     {% if user.is_authenticated %}
       <a href="{% url 'leagues:create' %}" class="btn btn-primary">Create League</a>
@@ -11,18 +11,136 @@
       <a href="{% url 'accounts:login' %}?next={% url 'leagues:list' %}" class="btn btn-primary">Login to create</a>
     {% endif %}
   </div>
-  <div class="grid">
-    {% for l in leagues %}
-      <div class="card">
-        <div class="card-header"><h3>{{ l.name }}</h3></div>
-        <div class="card-body">
-          <p>Owner: {{ l.owner.username }}</p>
-          <a href="{% url 'leagues:detail' l.slug %}" class="btn btn-secondary">View</a>
-          {% if user.is_authenticated and not user in l.members.all %}
-            <a href="{% url 'leagues:join' l.slug %}" class="btn btn-primary" style="margin-left:8px;">Join</a>
-          {% endif %}
-        </div>
+
+  <!-- Filter Section -->
+  <div style="background-color: #f5f5f5; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+    <h4 style="margin-top: 0;">Filter Leagues</h4>
+    <form method="get" style="display: flex; gap: 15px; align-items: center;">
+      <div>
+        <label for="league-type">Type:</label>
+        <select name="type" id="league-type" style="padding: 8px;">
+          <option value="">All Types</option>
+          <option value="whole_school" {% if league_type_filter == 'whole_school' %}selected{% endif %}>Whole School</option>
+          <option value="year_group" {% if league_type_filter == 'year_group' %}selected{% endif %}>Year Group</option>
+          <option value="class" {% if league_type_filter == 'class' %}selected{% endif %}>Class</option>
+          <option value="other" {% if league_type_filter == 'other' %}selected{% endif %}>Other</option>
+        </select>
       </div>
-    {% endfor %}
+      <div>
+        <label for="year-group">Year Group:</label>
+        <select name="year_group" id="year-group" style="padding: 8px;">
+          <option value="">All Years</option>
+          <option value="7" {% if year_group_filter == '7' %}selected{% endif %}>Year 7</option>
+          <option value="8" {% if year_group_filter == '8' %}selected{% endif %}>Year 8</option>
+          <option value="9" {% if year_group_filter == '9' %}selected{% endif %}>Year 9</option>
+          <option value="10" {% if year_group_filter == '10' %}selected{% endif %}>Year 10</option>
+          <option value="11" {% if year_group_filter == '11' %}selected{% endif %}>Year 11</option>
+          <option value="12" {% if year_group_filter == '12' %}selected{% endif %}>Year 12</option>
+          <option value="13" {% if year_group_filter == '13' %}selected{% endif %}>Year 13</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-secondary">Filter</button>
+      <a href="{% url 'leagues:list' %}" class="btn btn-secondary" style="background-color: #999;">Clear</a>
+    </form>
   </div>
+
+  <!-- Whole School Leagues -->
+  {% if whole_school_leagues %}
+    <h3 style="color: #1a2332; margin-top: 30px;">🏫 Whole School Competitions</h3>
+    <div class="grid">
+      {% for l in whole_school_leagues %}
+        <div class="card">
+          <div class="card-header" style="background-color: #f39c12;">
+            <h3>{{ l.name }}</h3>
+            <span style="font-size: 0.9em; color: #666;">Whole School</span>
+          </div>
+          <div class="card-body">
+            <p><strong>Owner:</strong> {{ l.owner.username }}</p>
+            <p><strong>Members:</strong> {{ l.members.count }}</p>
+            <a href="{% url 'leagues:detail' l.slug %}" class="btn btn-secondary">View Details</a>
+            {% if user.is_authenticated and not user in l.members.all %}
+              <a href="{% url 'leagues:join' l.slug %}" class="btn btn-primary" style="margin-left:8px;">Join</a>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- Year Group Leagues -->
+  {% if year_group_leagues %}
+    <h3 style="color: #1a2332; margin-top: 30px;">📚 Year Group Leagues</h3>
+    <div class="grid">
+      {% for l in year_group_leagues %}
+        <div class="card">
+          <div class="card-header" style="background-color: #f39c12;">
+            <h3>{{ l.name }}</h3>
+            <span style="font-size: 0.9em; color: #666;">Year {{ l.year_group }} League</span>
+          </div>
+          <div class="card-body">
+            <p><strong>Owner:</strong> {{ l.owner.username }}</p>
+            <p><strong>Members:</strong> {{ l.members.count }}</p>
+            <a href="{% url 'leagues:detail' l.slug %}" class="btn btn-secondary">View Details</a>
+            {% if user.is_authenticated and not user in l.members.all %}
+              <a href="{% url 'leagues:join' l.slug %}" class="btn btn-primary" style="margin-left:8px;">Join</a>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- Class Leagues -->
+  {% if class_leagues %}
+    <h3 style="color: #1a2332; margin-top: 30px;">🎓 Class Leagues</h3>
+    <div class="grid">
+      {% for l in class_leagues %}
+        <div class="card">
+          <div class="card-header" style="background-color: #f39c12;">
+            <h3>{{ l.name }}</h3>
+            <span style="font-size: 0.9em; color: #666;">Class League</span>
+          </div>
+          <div class="card-body">
+            <p><strong>Owner:</strong> {{ l.owner.username }}</p>
+            <p><strong>Members:</strong> {{ l.members.count }}</p>
+            <a href="{% url 'leagues:detail' l.slug %}" class="btn btn-secondary">View Details</a>
+            {% if user.is_authenticated and not user in l.members.all %}
+              <a href="{% url 'leagues:join' l.slug %}" class="btn btn-primary" style="margin-left:8px;">Join</a>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- Other Leagues -->
+  {% if other_leagues %}
+    <h3 style="color: #1a2332; margin-top: 30px;">Other Leagues</h3>
+    <div class="grid">
+      {% for l in other_leagues %}
+        <div class="card">
+          <div class="card-header" style="background-color: #f39c12;">
+            <h3>{{ l.name }}</h3>
+            <span style="font-size: 0.9em; color: #666;">Other</span>
+          </div>
+          <div class="card-body">
+            <p><strong>Owner:</strong> {{ l.owner.username }}</p>
+            <p><strong>Members:</strong> {{ l.members.count }}</p>
+            <a href="{% url 'leagues:detail' l.slug %}" class="btn btn-secondary">View Details</a>
+            {% if user.is_authenticated and not user in l.members.all %}
+              <a href="{% url 'leagues:join' l.slug %}" class="btn btn-primary" style="margin-left:8px;">Join</a>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- No leagues message -->
+  {% if not leagues %}
+    <div style="text-align: center; padding: 40px; color: #666;">
+      <p>No leagues found matching your criteria.</p>
+    </div>
+  {% endif %}
+
 {% endblock %}

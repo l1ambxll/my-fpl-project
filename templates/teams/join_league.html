@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Assign {{ team.name }} to League{% endblock %}
+
+{% block content %}
+  <h2>Assign {{ team.name }} to League</h2>
+
+  <div class="card" style="max-width: 500px; margin: 30px auto;">
+    <div class="card-header">
+      <h3>Select a League</h3>
+    </div>
+    <div class="card-body">
+      {% if current_league %}
+        <div style="background: #e8f5e9; padding: 12px; border-radius: 5px; margin-bottom: 20px; border-left: 4px solid #27ae60;">
+          <p style="margin: 0;"><strong>✓ Currently in:</strong> {{ current_league.name }}</p>
+        </div>
+      {% endif %}
+
+      {% if user_leagues %}
+        <form method="post">
+          {% csrf_token %}
+          <div style="margin-bottom: 20px;">
+            <label for="league"><strong>Choose League:</strong></label>
+            <select name="league" id="league" required style="width: 100%; padding: 10px; margin-top: 8px; border: 1px solid #ddd; border-radius: 4px;">
+              <option value="">-- Select a league --</option>
+              {% for league in user_leagues %}
+                <option value="{{ league.id }}" {% if current_league and league.id == current_league.id %}selected{% endif %}>
+                  {{ league.name }} ({{ league.get_league_type_display }})
+                </option>
+              {% endfor %}
+            </select>
+            <small style="color: #666; display: block; margin-top: 5px;">📌 Can only assign to leagues you're a member of</small>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%;" onclick="return confirm('Assign {{ team.name }} to the selected league?');">Assign to League</button>
+        </form>
+      {% else %}
+        <p style="background: #fff3cd; padding: 12px; border-radius: 5px; border-left: 4px solid #f39c12;">
+          ⚠️ You're not a member of any leagues yet. 
+          <a href="{% url 'leagues:list' %}">Browse and join a league first.</a>
+        </p>
+      {% endif %}
+
+      <a href="{% url 'teams:team_detail' team.pk %}" class="btn btn-secondary" style="margin-top: 15px; width: 100%;">Back to Team</a>
+    </div>
+  </div>
+{% endblock %}

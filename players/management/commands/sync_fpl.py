@@ -5,6 +5,7 @@ from teams.models import Club
 
 
 FPL_BOOTSTRAP = 'https://fantasy.premierleague.com/api/bootstrap-static/'
+FPL_PLAYER = 'https://fantasy.premierleague.com/api/element/{}/history/'
 
 
 def _map_position(element_type):
@@ -42,6 +43,20 @@ class Command(BaseCommand):
                 except Club.DoesNotExist:
                     team_obj = None
 
+            # Fetch gameweek scores for this player
+            gw_scores = {}
+            try:
+                gw_resp = requests.get(FPL_PLAYER.format(p['id']), timeout=15)
+                gw_resp.raise_for_status()
+                gw_data = gw_resp.json()
+                for history in gw_data.get('history', []):
+                    gw = history.get('round')
+                    points = history.get('total_points', 0)
+                    if gw:
+                        gw_scores[str(gw)] = points
+            except Exception as e:
+                self.stdout.write(self.style.WARNING(f"Could not fetch GW data for player {p['id']}: {e}"))
+
             Player.objects.update_or_create(
                 fpl_id=p['id'],
                 defaults={
@@ -53,6 +68,7 @@ class Command(BaseCommand):
                     'now_cost': (p.get('now_cost') or 0) / 10.0,
                     'total_points': p.get('total_points') or 0,
                     'minutes': p.get('minutes') or 0,
+                    'gameweek_scores': gw_scores,
                 }
             )
 

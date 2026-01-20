@@ -4,25 +4,59 @@
 
 {% block content %}
   <div class="card">
-    <div class="card-header"><h2>{{ league.name }}</h2></div>
+    <div class="card-header" style="background-color: #f39c12;">
+      <h2>{{ league.name }}</h2>
+      <!-- League Type Badge -->
+      {% if league.league_type == 'whole_school' %}
+        <span style="font-size: 1.1em; color: #1a2332; display: inline-block; margin-top: 10px;">🏫 <strong>Whole School Competition</strong></span>
+      {% elif league.league_type == 'year_group' %}
+        <span style="font-size: 1.1em; color: #1a2332; display: inline-block; margin-top: 10px;">📚 <strong>Year {{ league.year_group }} League</strong></span>
+      {% elif league.league_type == 'class' %}
+        <span style="font-size: 1.1em; color: #1a2332; display: inline-block; margin-top: 10px;">🎓 <strong>Class League</strong></span>
+      {% else %}
+        <span style="font-size: 1.1em; color: #1a2332; display: inline-block; margin-top: 10px;"><strong>{{ league.get_league_type_display }}</strong></span>
+      {% endif %}
+    </div>
     <div class="card-body">
       <p><strong>Owner:</strong> {{ league.owner.username }}</p>
-      <p>{{ league.about }}</p>
+      <p><strong>About:</strong> {{ league.about }}</p>
+      
+      <!-- League Information Box -->
+      <div style="background-color: #f0f0f0; padding: 15px; border-left: 4px solid #f39c12; margin: 15px 0;">
+        <h4 style="margin-top: 0;">League Information</h4>
+        <p><strong>Type:</strong> 
+          {% if league.league_type == 'whole_school' %}
+            Whole School - Open to all students
+          {% elif league.league_type == 'year_group' %}
+            Year Group - For Year {{ league.year_group }} students only
+          {% elif league.league_type == 'class' %}
+            Class League
+          {% else %}
+            Other
+          {% endif %}
+        </p>
+        <p><strong>Members:</strong> {{ league.members.count }}</p>
+      </div>
+
       {% if user.is_authenticated %}
         {% if is_member %}
-          <p class="bg-accent">You are a member of this league.</p>
+          <p style="background-color: #d4edda; padding: 10px; border-radius: 5px; color: #155724;">✓ You are a member of this league.</p>
         {% else %}
           <a href="{% url 'leagues:join' league.slug %}" class="btn btn-primary">Join League</a>
         {% endif %}
       {% else %}
         <a href="{% url 'accounts:login' %}?next={% url 'leagues:detail' league.slug %}" class="btn btn-primary">Login to join</a>
       {% endif %}
-      <h3>Members</h3>
+      
+      <h3>Leaderboard</h3>
+      <a href="{% url 'leagues:leaderboard' league.slug %}" class="btn btn-secondary">View Leaderboard</a>
+
+      <h3 style="margin-top: 30px;">Members</h3>
       <ul>
         {% for m in league.members.all %}
           <li>{{ m.username }}</li>
         {% empty %}
-          <li>No members yet.</li>
+          <li>No members yet. Be the first to join!</li>
         {% endfor %}
       </ul>
     </div>

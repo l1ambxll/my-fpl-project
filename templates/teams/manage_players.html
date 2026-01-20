@@ -17,6 +17,23 @@
             <li>{{ pos_name }}: {{ position_counts|get_item:pos_id }}/{{ position_limits|get_item:pos_id }}</li>
           {% endfor %}
         </ul>
+        
+        <!-- Transfer Limit Display -->
+        <div style="background-color: {% if transfers_remaining == 0 %}#ffe5e5{% else %}#e5f5ff{% endif %}; padding: 12px; border-radius: 5px; margin-top: 15px; border-left: 4px solid {% if transfers_remaining == 0 %}#e74c3c{% else %}#3498db{% endif %};">
+          <p style="margin: 0; font-weight: bold;">
+            ⚡ Transfers: <span style="color: {% if transfers_remaining == 0 %}#e74c3c{% else %}#27ae60{% endif %};">{{ transfers_used }}/2</span> used
+          </p>
+          <p style="margin: 5px 0 0 0; font-size: 0.9em; color: #666;">
+            {% if transfers_remaining == 0 %}
+              ⚠️ Transfer limit reached this gameweek
+            {% elif transfers_remaining == 1 %}
+              {{ transfers_remaining }} transfer remaining
+            {% else %}
+              {{ transfers_remaining }} transfers remaining
+            {% endif %}
+          </p>
+        </div>
+        
         <a href="{% url 'teams:team_detail' team.pk %}" class="btn btn-secondary" style="margin-top: 10px;">View Team</a>
       </div>
     </div>
@@ -100,25 +117,30 @@
 
       <!-- Players Grid -->
       <div class="grid">
-        {% for player in players %}
+        {% for item in players %}
           <div class="card">
             <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-              <h4>{{ player.web_name }}</h4>
+              <h4>{{ item.player.web_name }}</h4>
               <span style="background: #f39c12; color: #1a2332; padding: 3px 8px; border-radius: 3px; font-size: 12px;">
-                {{ player.get_position_display }}
+                {{ item.player.get_position_display }}
               </span>
             </div>
             <div class="card-body">
-              <p><strong>Team:</strong> {% if player.team %}{{ player.team.name }}{% else %}—{% endif %}</p>
-              <p><strong>Price:</strong> £{{ player.now_cost|default:"—" }}m</p>
-              <p><strong>Points:</strong> {{ player.total_points }}</p>
+              <p><strong>Team:</strong> {% if item.player.team %}{{ item.player.team.name }}{% else %}—{% endif %}</p>
+              <p><strong>Price:</strong> £{{ item.player.now_cost|default:"—" }}m</p>
+              <p><strong>Points:</strong> {{ item.player.total_points }}</p>
+              {% if item.player.team %}
+                {% if item.club_count >= 3 %}
+                  <p style="color: #e74c3c; font-size: 12px; margin: 5px 0;"><strong>⚠️ Club limit reached (3/3)</strong></p>
+                {% else %}
+                  <p style="color: #27ae60; font-size: 12px; margin: 5px 0;"><strong>From {{ item.player.team.name }}: {{ item.club_count }}/3</strong></p>
+                {% endif %}
+              {% endif %}
               <form method="post" style="display: inline;">
                 {% csrf_token %}
-                <input type="hidden" name="player" value="{{ player.pk }}">
+                <input type="hidden" name="player" value="{{ item.player.pk }}">
                 <button type="submit" class="btn btn-primary" 
-                        {% if position_counts|get_item:player.position >= position_limits|get_item:player.position %}
-                          disabled title="Position limit reached"
-                        {% endif %}>
+                        {% if not item.can_add %}disabled title="Maximum 3 players from this club"{% endif %}>
                   Add to Squad
                 </button>
               </form>

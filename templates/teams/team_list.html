@@ -1,18 +1,68 @@
 {% extends "base.html" %}
 
-{% block title %}User Teams - Fantasy Premier League{% endblock %}
+{% block title %}My Teams - Fantasy Football{% endblock %}
 
 {% block content %}
-  <h2>User Teams</h2>
-  <div class="grid">
-    {% for t in teams %}
-      <div class="card">
-        <div class="card-header"><h3>{{ t.name }}</h3></div>
-        <div class="card-body">
-          <p>Owner: {{ t.owner.username }}</p>
-          <a href="{% url 'teams:team_detail' t.pk %}" class="btn btn-secondary">View</a>
-        </div>
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2>My Fantasy Teams</h2>
+    <a href="{% url 'teams:create' %}" class="btn btn-primary">Create New Team</a>
+  </div>
+
+  {% if teams %}
+    <div class="grid">
+      {% for t in teams %}
+        {% if t.owner == user %}
+          <div class="card">
+            <div class="card-header">
+              <h3>{{ t.name }}</h3>
+            </div>
+            <div class="card-body">
+              <p><strong>Players:</strong> {{ t.players.count }} selected</p>
+              {% if t.league %}
+                <p><strong>Leagues:</strong> {{ t.league.name }}</p>
+              {% else %}
+                <p><strong>Leagues:</strong> Not in any league yet</p>
+              {% endif %}
+              <p><strong>Points:</strong> {{ t.get_total_points }}</p>
+              <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <a href="{% url 'teams:manage_players' t.pk %}" class="btn btn-primary" style="flex: 1; text-align: center;">Manage Squad</a>
+                <a href="{% url 'teams:team_detail' t.pk %}" class="btn btn-secondary" style="flex: 1; text-align: center;">View</a>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="card">
+      <div class="card-body" style="text-align: center; padding: 40px;">
+        <p style="font-size: 16px; color: #666;">You haven't created any teams yet.</p>
+        <a href="{% url 'teams:create' %}" class="btn btn-primary" style="margin-top: 15px;">Create Your First Team</a>
       </div>
-    {% endfor %}
+    </div>
+  {% endif %}
+
+  <div class="card" style="margin-top: 30px;">
+    <div class="card-header">
+      <h3>ℹ️ All Teams (View Only)</h3>
+    </div>
+    <div class="card-body">
+      <p style="margin-bottom: 15px;">Below are all teams in the system. You can view other teams' squads:</p>
+      <div class="grid">
+        {% for t in teams %}
+          <div class="card">
+            <div class="card-header">
+              <h4>{{ t.name }}</h4>
+            </div>
+            <div class="card-body">
+              <p><strong>Owner:</strong> {{ t.owner.username }}</p>
+              <p><strong>Players:</strong> {{ t.players.count }}</p>
+              <p><strong>Points:</strong> {{ t.get_total_points }}</p>
+              <a href="{% url 'teams:team_detail' t.pk %}" class="btn btn-secondary">View Squad</a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
   </div>
 {% endblock %}
