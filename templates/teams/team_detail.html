@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ team.name }}</h1>
+<h2>Formation: {{ formation }}</h2>
+
+<h3>Goalkeepers ({{ gk_count }})</h3>
+<ul>
+    {% for player in gk %}
+        <li>{{ player.web_name }}</li>
+    {% empty %}
+        <li>None</li>
+    {% endfor %}
+</ul>
+
+<h3>Defenders ({{ def_count }})</h3>
+<ul>
+    {% for player in def_players %}
+        <li>{{ player.web_name }}</li>
+    {% empty %}
+        <li>None</li>
+    {% endfor %}
+</ul>
+
+<h3>Midfielders ({{ mid_count }})</h3>
+<ul>
+    {% for player in mid_players %}
+        <li>{{ player.web_name }}</li>
+    {% empty %}
+        <li>None</li>
+    {% endfor %}
+</ul>
+
+<h3>Forwards ({{ fwd_count }})</h3>
+<ul>
+    {% for player in fwd_players %}
+        <li>{{ player.web_name }}</li>
+    {% empty %}
+        <li>None</li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'teams:manage_players' team.pk %}">Manage Players</a>
+{% endblock %}

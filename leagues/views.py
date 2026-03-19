@@ -58,7 +58,6 @@ def league_create(request):
 
             league = League.objects.create(
                 name=name,
-                slug=slug,
                 owner=request.user,
                 about=about,
                 league_type=league_type,
