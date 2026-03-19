@@ -22,15 +22,13 @@ def login_view(request):
         if user is not None:
             login(request, user)
             messages.success(request, f'Welcome back, {username}!')
-            next_page = request.GET.get('next', 'home')
-            return redirect(next_page)
+            return redirect('home')
         else:
             messages.error(request, 'Invalid username or password.')
 
     return render(request, 'accounts/login.html')
 
 @never_cache
-@ensure_csrf_cookie
 @require_http_methods(["GET", "POST"])
 def register_view(request):
     if request.user.is_authenticated:
