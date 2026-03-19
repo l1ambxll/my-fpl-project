@@ -33,7 +33,6 @@ CSRF_TRUSTED_ORIGINS = [
     "https://localhost:8000",
 ]
 
-CSRF_USE_SESSIONS = True
 CSRF_COOKIE_SECURE = False
 SESSION_COOKIE_SECURE = False
 
