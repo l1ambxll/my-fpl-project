@@ -1,7 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.utils.text import slugify
 
 from .models import League
 from .forms import LeagueCreateForm
@@ -56,13 +55,6 @@ def league_create(request):
             league_type = form.cleaned_data['league_type']
             year_group = form.cleaned_data.get('year_group') or None
             
-            slug = slugify(name)
-            # ensure unique slug
-            base_slug = slug
-            counter = 1
-            while League.objects.filter(slug=slug).exists():
-                slug = f"{base_slug}-{counter}"
-                counter += 1
 
             league = League.objects.create(
                 name=name,
