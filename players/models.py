@@ -11,10 +11,6 @@ POSITION_CHOICES = [
 
 
 class Player(models.Model):
-	"""
-	Represents a Premier League player that students can select for their teams.
-	Data is synced from the Premier League API for real-world accuracy.
-	"""
 	fpl_id = models.IntegerField(unique=True)
 	first_name = models.CharField(max_length=100)
 	last_name = models.CharField(max_length=100)

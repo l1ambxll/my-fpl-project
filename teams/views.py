@@ -5,7 +5,7 @@ from django.db.models import Q
 from .models import Club, UserTeam, Transfer
 from .forms import PlayerSelectionForm
 from players.models import Player, POSITION_CHOICES
-
+from django.views.decorators.http import require_POST
 
 def teams_index(request):
     clubs = Club.objects.all()
@@ -136,12 +136,12 @@ def userteam_manage_players(request, pk):
             if existing_position_count >= position_limit:
                 # This is a transfer - need to check 2 transfer limit
                 if not team.can_make_transfer():
-                    messages.error(request, f"❌ Transfer limit reached! You can only make 2 transfers per gameweek. Current: {team.get_gameweek_transfers()}/2")
+                    messages.error(request, f" Transfer limit reached! You can only make 2 transfers per gameweek. Current: {team.get_gameweek_transfers()}/2")
                     return redirect('teams:manage_players', pk=pk)
-                messages.info(request, f"⚠️ Transfer being made! Transfers used this gameweek: {team.get_gameweek_transfers() + 1}/2")
+                messages.info(request, f" Transfer being made! Transfers used this gameweek: {team.get_gameweek_transfers() + 1}/2")
             
             team.players.add(player)
-            messages.success(request, f"✓ {player.web_name} added to squad!")
+            messages.success(request, f" {player.web_name} added to squad!")
             return redirect('teams:manage_players', pk=pk)
     else:
         form = PlayerSelectionForm(team=team)
@@ -175,6 +175,7 @@ def userteam_manage_players(request, pk):
 
 
 @login_required
+@require_POST
 def userteam_remove_player(request, team_id, player_id):
     team = get_object_or_404(UserTeam, pk=team_id)
     
@@ -184,11 +185,12 @@ def userteam_remove_player(request, team_id, player_id):
 
     player = get_object_or_404(Player, pk=player_id)
     team.players.remove(player)
-    messages.success(request, f"✓ {player.web_name} removed from squad!")
+    messages.success(request, f" {player.web_name} removed from squad!")
     return redirect('teams:manage_players', pk=team_id)
 
 
 @login_required
+@require_POST
 def userteam_join_league(request, pk):
     """Assign team to a league"""
     from leagues.models import League
@@ -208,7 +210,7 @@ def userteam_join_league(request, pk):
                 if league.members.filter(pk=request.user.pk).exists():
                     team.league = league
                     team.save()
-                    messages.success(request, f"✓ {team.name} joined {league.name}!")
+                    messages.success(request, f" {team.name} joined {league.name}!")
                     return redirect('teams:team_detail', pk=team.pk)
                 else:
                     messages.error(request, "You must be a member of the league first.")
@@ -231,6 +233,7 @@ def userteam_join_league(request, pk):
 
 
 @login_required
+@require_POST
 def userteam_assign_league(request):
     """Direct inline league assignment (no page redirect)"""
     from leagues.models import League
@@ -250,7 +253,7 @@ def userteam_assign_league(request):
             if league.members.filter(pk=request.user.pk).exists():
                 team.league = league
                 team.save()
-                messages.success(request, f"✓ {team.name} joined {league.name}!")
+                messages.success(request, f" {team.name} joined {league.name}!")
             else:
                 messages.error(request, "You must be a member of the league first.")
         except UserTeam.DoesNotExist:
