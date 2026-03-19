@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.views.decorators.http import require_http_methods
+from django.views.decorators.cache import never_cache
 
 @never_cache
 @require_http_methods(["GET", "POST"])
