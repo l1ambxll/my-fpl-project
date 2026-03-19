@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.views.decorators.http import require_http_methods
 
-@mever_cache
+@never_cache
 @require_http_methods(["GET", "POST"])
 def login_view(request):
     if request.user.is_authenticated:
