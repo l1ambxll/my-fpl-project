@@ -8,8 +8,10 @@ from players.models import Player, POSITION_CHOICES
 from django.views.decorators.http import require_POST
 from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_http_methods
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 @never_cache
+@ensure_csrf_cookie
 @require_http_methods(["GET", "POST"])
 def teams_index(request):
     clubs = Club.objects.all()
