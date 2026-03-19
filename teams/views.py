@@ -14,6 +14,8 @@ def teams_index(request):
 
 
 @login_required
+@never_cache
+@require_http_methods(["GET", "POST"])
 def create_team(request):
     """Create a new team for the user"""
     if request.method == 'POST':
