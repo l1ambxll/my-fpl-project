@@ -7,6 +7,7 @@ from django.views.decorators.http import require_http_methods
 from django.views.decorators.cache import never_cache
 
 @never_cache
+@ensure_csrf_cookie
 @require_http_methods(["GET", "POST"])
 def login_view(request):
     if request.user.is_authenticated:
@@ -29,6 +30,7 @@ def login_view(request):
     return render(request, 'accounts/login.html')
 
 @never_cache
+@ensure_csrf_cookie
 @require_http_methods(["GET", "POST"])
 def register_view(request):
     if request.user.is_authenticated:
